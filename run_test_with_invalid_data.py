@@ -3,7 +3,7 @@ s1 = 'test_create_post'
 s2 = 'test_get_users'
 s3 = 'test_update_user'
 s4 = 'test_create_user_invalid_data'
- 
+
 if __name__ == '__main__':
 	print(s1.upper(),'\n')
 	test_create_post()

@@ -3,6 +3,7 @@ import json
 import random
 from settings import url, headers, host, port, root_url, user_created, status_ok, user_created_invalid, user_create_payload, invalid_create_user_payload
 
+
 def test_create_user():
     try:
         res = requests.post(url, data=json.dumps(user_create_payload), headers=headers)
@@ -73,15 +74,18 @@ def test_create_user_invalid_data():
         if status == user_created_invalid:
             try:
                 body = res.json()
+                if type(body) == list:
+                    print(f"Users extracted successfully. Status-code: {status}")
                 message = body.get("error_message")
                 if message:
                     print(f"User wasn't created, cause invalid input data with status-code: {status} \n and error_message: {message}")
-            except Exception as e:
+             except Exception as e:
                 raise Exception(f"Failed with exception {e}")
         else:
             print(f"ERROR: User created with invalid data. With status-code {status}")
     except Exception as e:
         raise Exception(f"Request to {url} failed with exception: {e}")
+
 
 
 def test_update_user_invalid_data():
@@ -108,6 +112,20 @@ def test_update_user_invalid_data():
         print(f"Response body is empty, details: {users}")
 
 
-
-
+def test_create_user_invalid_data():
+    try:
+        res = requests.post(url, data=json.dumps(invalid_create_user_payload), headers=headers)
+        status = res.status_code
+        if status == user_created_invalid:
+            try:
+                body = res.json()
+                message = body.get("error_message")
+                if message:
+                    print(f"User wasn't created, cause invalid input data with status-code: {status} \n and error_message: {message}")
+            except Exception as e:
+                raise Exception(f"Failed with exception {e}")
+        else:
+            print(f"ERROR: User created with invalid data. With status-code {status}")
+    except Exception as e:
+        raise Exception(f"Request to {url} failed with exception: {e}")
 

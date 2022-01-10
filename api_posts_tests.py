@@ -13,6 +13,96 @@ headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
 post_create_payload = {'title': 'a', 'text': 'b', 'author_id': 1}
 url = f"{root_url}/posts"
 post_create_invalid_payload = {'text': 'b', 'author_id': 1}
+post_create_payload = {'title': 'a', 'text': 'b', 'author_id': 1}
+url = f"{root_url}/posts"
+
+
+def test_create_post():
+    try:
+        res = requests.post(url, data=json.dumps(post_create_payload), headers=headers)
+        status = res.status_code
+        if status == created:
+            try:
+                body = res.json()
+                if body.get("title") != post_create_payload.get("title"):
+                    print(f"Wrong data in {body.get('title')}. Status code: {status}")
+                elif body.get("text") != post_create_payload.get("text"):
+                    print(f"Wrong data in {body.get('text')}. Status code: {status}")
+                elif body.get("author_id") != post_create_payload.get("author_id"):
+                    print(f"Wrong data-type in author_id: {body.get('author_id')} given. Status code: {status}")
+                else:
+                    print(f"Post created successfully!. Created data {body} Status code: {status}")
+                return True 
+            except Exception:
+                raise Exception(f"Exception with jsonifying content: {res.content}")
+        else:
+            print(f"Post creation has failed with wrong response status code: {status}")
+    except Exception as e:
+        raise Exception(f"Request to {url} failed with exception: {e}")
+
+
+def test_get_users():
+    try:
+        res = requests.get(url)
+        status = res.status_code
+        if status == status_ok:
+            try:
+                body = res.json()
+                if type(body) == list:
+                    print(f"Users extracted successfully. Status-code: {status}")
+            except Exception as e:
+                raise Exception(f"Failed with  {res.content}")
+    except Exception as e:
+        raise Exception(f"Request to {url} failed with exception: {e}")
+
+
+def test_update_user():
+    res = requests.get(url)
+    users = res.json()
+    if users:
+        random_user = random.choice(users)
+        current_username = random_user.get("username")
+        random_user_id = random_user.get("id")
+        random_user_url = f"{url}/{random_user_id}"
+       
+        updated_user_payload = random_user.copy()
+
+        updated_username =  ''.join(random.sample(current_username,len(current_username)))
+        updated_user_payload["username"] = updated_username
+
+        res = requests.put(random_user_url, data=json.dumps(updated_user_payload), headers=headers)
+        updated_user = res.json()
+        if updated_user != random_user:
+            print(f"User {random_user} updated successfully to {updated_user}.")
+        else:
+            print(f"User updating failed, {updated_user} equals {random_user}.")
+    else:
+        print(f"Response body is empty, details: {users}")
+
+
+def test_create_user_invalid_data():
+    try:
+        res = requests.post(url, data=json.dumps(invalid_create_user_payload), headers=headers)
+        status = res.status_code
+        if status == user_created_invalid:
+            try:
+                body = res.json()
+                message = body.get("error_message")
+                if message:
+                    print(f"User wasn't created, cause invalid input data with status-code: {status} \n and error_message: {message}")
+            except Exception as e:
+                raise Exception(f"Failed with exception {e}")
+        else:
+            print(f"ERROR: User created with invalid data. With status-code {status}")
+    except Exception as e:
+        raise Exception(f"Request to {url} failed with exception: {e}")
+
+
+
+
+
+
+
 #url_posts_id = f"{root_url}/posts/1"
 
 def generate_not_exists_post_id(posts_ids):
@@ -160,3 +250,4 @@ class TestPosts(unittest.TestCase):
 
 if __name__ == '__main__':
     unittest.main()
+
