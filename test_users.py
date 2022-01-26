@@ -1,9 +1,10 @@
-
-import requests
 import json
 import random
-from settings import headers, create_user_payload, create_user_invalid_payload, root_url
+
 import pytest
+import requests
+
+from settings import created, updated, success, bad_request, headers, root_url, create_user_payload, create_user_invalid_payload
 
 get_user_expected_status = 200
 create_user_expected_status = 201
@@ -46,7 +47,7 @@ def test_with_errors_in_code_skipped():
 	assert type(body) is list
 
 
-@pytest.mark.skipif(env == "dev", "skip for DEV-env")
+#@pytest.mark.skipif(env == "dev", "skip for DEV-env")
 def test_update_user():
 	users_url = f"{root_url}/users"
 	users = requests.get(users_url).json()

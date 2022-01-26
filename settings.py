@@ -1,13 +1,18 @@
+import os
+
+#host = os.environ.get('HOST')
+port = os.environ.get('PORT')
+
 host = 'http://localhost'
-port = '5000'
+#port = '5000'
 root_url = f"{host}:{port}"
 user_created = 201
 status_ok = 200
 user_created_invalid = 400
 headers = {'Content-type': 'application/json', 'Accept': 'application/json'}
-user_create_payload = {'username': 'new_user', 'email': 'test@mail.com', 'password': '123'}
+create_user_payload = {'username': 'new_user', 'email': 'test@mail.com', 'password': '123'}
 url = f"{root_url}/users"
-invalid_create_user_payload = {'email': 'invalid_test@mail.com', 'password': '1234'}
+create_user_invalid_payload = {'email': 'invalid_test@mail.com', 'password': '1234'}
 
 
 created = 201
